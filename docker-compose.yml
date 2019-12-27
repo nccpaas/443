@@ -1,0 +1,26 @@
+version: '2'
+services:
+    443_nginx:
+        image: nginx:1.16.1-alpine
+        volumes:
+            - ./www:/var/code
+            - ./nginx:/etc/nginx:ro
+            - /etc/letsencrypt:/var/cert
+            - /etc/ssl/certs:/var/ssl
+            - /var/log:/var/log
+        ports:
+            - "80:80"
+            - "8001:8001"
+            - "8002:8002"
+            - "443:443"
+        container_name: 443_nginx
+        restart: always
+        command: sh -c "cp /etc/nginx/Bangkok /etc/localtime && echo 'Asia/Bangkok' >  /etc/timezone && date &&  nginx -g 'daemon off;'"
+        networks:
+            - default
+
+### Network Docker ##################################
+networks:
+    default:
+      external:
+          name: docker_external
